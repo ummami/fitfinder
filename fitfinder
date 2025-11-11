@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitFinder - Your AI Fashion Assistant</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+  font-family: "Didot", "Bodoni MT", "Playfair Display", Georgia, serif;
+  background: #0f3b2f;          /* deep forest green */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+   .container {
+  background: #ffffff;
+  max-width: 800px;
+  width: 100%;
+  height: 700px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 8px; /* looks nicer with shadow */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  /* stronger shadow */
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.18),
+    0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+
+    .header {
+      background: white;
+      color: #2c3e50;
+      padding: 40px 25px 30px;
+      text-align: center;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    .header h1 {
+      font-size: 52px;
+      margin-bottom: 8px;
+      font-weight: 300;
+      letter-spacing: 12px;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.7;
+      letter-spacing: 3px;
+      font-weight: 300;
+      text-transform: lowercase;
+      font-style: italic;
+      color: #5a7a8f;
+    }
+
+    .chat-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: #fafaf8;
+    }
+
+    .message {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user {
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      flex-shrink: 0;
+      letter-spacing: .02em;
+    }
+
+    .message.bot .avatar {
+      background: #0f172a;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .message.user .avatar {
+      background: #e2e8f0;
+      color: #0f172a;
+      border: 1px solid rgba(15,23,42,0.05);
+    }
+
+    .message-content {
+      max-width: 70%;
+      padding: 15px 20px;
+      border-radius: 2px;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .message.bot .message-content {
+      background: white;
+      border: 1px solid #d8d8d8;
+      color: #2c3e50;
+    }
+
+    .message.user .message-content {
+      background: #5a7a8f;
+      color: white;
+    }
+
+    .product-links {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .product-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #fafaf8;
+      border-radius: 2px;
+      text-decoration: none;
+      color: #2c3e50;
+      transition: all 0.2s;
+      border: 1px solid #d8d8d8;
+    }
+
+    .product-link:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-color: #5a7a8f;
+    }
+
+    .product-info { flex: 1; }
+
+    .product-name {
+      font-weight: 500;
+      margin-bottom: 3px;
+      color: #1a1a1a;
+    }
+
+    .product-store {
+      font-size: 12px;
+      color: #5a7a8f;
+    }
+
+    .input-area {
+      padding: 20px;
+      background: white;
+      border-top: 1px solid #d8d8d8;
+      display: flex;
+      gap: 10px;
+    }
+
+    #userInput {
+      flex: 1;
+      padding: 15px 20px;
+      border: 1px solid #d8d8d8;
+      border-radius: 2px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.3s;
+      font-family: "Didot", "Bodoni MT", "Playfair Display", Georgia, serif;
+    }
+
+    #userInput:focus {
+      border-color: #5a7a8f;
+    }
+
+    #sendBtn {
+      padding: 15px 35px;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 400;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-family: "Didot", "Bodoni MT", "Playfair Display", Georgia, serif;
+    }
+
+    #sendBtn:hover:not(:disabled) {
+      background: #5a7a8f;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
+    }
+
+    #sendBtn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .typing-indicator {
+      display: none;
+      padding: 15px;
+      background: white;
+      border-radius: 2px;
+      width: fit-content;
+      border: 1px solid #d8d8d8;
+    }
+
+    .typing-indicator.active {
+      display: block;
+    }
+
+    .typing-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #5a7a8f;
+      margin: 0 2px;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+
+    .quick-suggestions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .suggestion-chip {
+      padding: 8px 16px;
+      background: white;
+      border-radius: 2px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #d8d8d8;
+      color: #2c3e50;
+    }
+
+    .suggestion-chip:hover {
+      background: #5a7a8f;
+      color: white;
+      border-color: #5a7a8f;
+    }
+
+    @media (max-width: 600px) {
+      .container { height: 100vh; }
+      .message-content { max-width: 85%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>FITFINDER</h1>
+      <p>your ai-powered fashion assistant</p>
+    </div>
+
+    <div class="chat-area" id="chatArea">
+      <div class="message bot">
+        <div class="avatar">FF</div>
+        <div class="message-content">
+          <p>Hi! I'm FitFinder 👗✨</p>
+          <p style="margin-top: 10px;">Try “pink skirt”, “black pants”, “red midi dress”, “white top”. I’ll give you store links.</p>
+          <div class="quick-suggestions">
+            <div class="suggestion-chip" data-suggestion="black pants">Black pants</div>
+            <div class="suggestion-chip" data-suggestion="pink skirt">Pink skirt</div>
+            <div class="suggestion-chip" data-suggestion="red dress">Red dress</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <input id="userInput" placeholder="Ask me about fashion..." aria-label="Type your fashion question" />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+
+<script>
+  const chatArea = document.getElementById("chatArea");
+  const userInput = document.getElementById("userInput");
+  const sendBtn = document.getElementById("sendBtn");
+
+  // ✅ flat list of working retailers we can shuffle
+  const allRetailers = [
+    { name: "Zara", base: "https://www.zara.com/us/en/search?searchTerm=" },
+    { name: "ASOS", base: "https://www.asos.com/search/?q=" },
+    { name: "Uniqlo", base: "https://www.uniqlo.com/us/en/search?q=" },
+    { name: "Target", base: "https://www.target.com/s?searchTerm=" },
+    { name: "Urban Outfitters", base: "https://www.urbanoutfitters.com/search?q=" },
+    { name: "SSENSE", base: "https://www.ssense.com/en-us/women?q=" },
+    { name: "NET-A-PORTER", base: "https://www.net-a-porter.com/en-us/shop/search?searchTerm=" },
+    { name: "H&M", base: "https://www2.hm.com/en_us/search-results.html?q=" },
+    { name: "Mango", base: "https://shop.mango.com/us/search?q=" }
+  ];
+
+  const colors = [
+    "black","white","brown","beige","tan","cream","ivory","red","pink",
+    "blue","navy","green","yellow","orange","purple","gray"
+  ];
+
+  document.addEventListener("DOMContentLoaded", () => {
+    sendBtn.addEventListener("click", handleSend);
+    userInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") handleSend();
+    });
+
+    document.querySelectorAll(".suggestion-chip")?.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        userInput.value = chip.dataset.suggestion;
+        handleSend();
+      });
+    });
+  });
+
+  async function handleSend() {
+    const message = userInput.value.trim();
+    if (!message) return;
+    addMessage(message, "user");
+    userInput.value = "";
+    sendBtn.disabled = true;
+    showTypingIndicator();
+    try {
+      await simulateFashion(message);
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  async function simulateFashion(query) {
+    // fake delay
+    await new Promise((r) => setTimeout(r, 500));
+    hideTypingIndicator();
+
+    const lower = query.toLowerCase();
+    const color = detectColor(lower);
+    const category = detectCategory(lower); // dress, jeans, pants, skirt, top, shirt
+    const searchQuery = buildSearchQuery({ query, color, category });
+
+    // shuffle retailers so the 3 we show look random
+    const shuffled = shuffle([...allRetailers]).slice(0, 3);
+
+    addBotMessage(`Here are some places to shop for “${query}”:`, shuffled, searchQuery, color);
+  }
+
+  function detectColor(text) {
+    return colors.find((c) => text.includes(c)) || "";
+  }
+
+  function detectCategory(text) {
+    if (text.includes("dress")) return "dress";
+    if (text.includes("skirt")) return "skirt";
+    if (text.includes("jeans")) return "jeans";
+    if (text.includes("pants") || text.includes("trousers")) return "pants";
+    if (text.includes("shirt")) return "shirt";
+    if (text.includes("top") || text.includes("tank")) return "top";
+    return ""; // let brand search handle it
+  }
+
+  function buildSearchQuery({ query, color, category }) {
+    const parts = [];
+    if (color) parts.push(color);
+    if (category) parts.push(category);
+    // last word from original query (helps when user says "maxi skirt")
+    const lastWord = query.trim().split(" ").pop();
+    if (!category && lastWord) parts.push(lastWord);
+    return parts.join(" ").trim();
+  }
+
+  // Fisher–Yates shuffle
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function addBotMessage(text, shops, searchQuery, color) {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = "message bot";
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = "FF";
+
+    const contentDiv = document.createElement("div");
+    contentDiv.className = "message-content";
+    contentDiv.innerHTML = `<p>${text}</p>`;
+
+    const linksDiv = document.createElement("div");
+    linksDiv.className = "product-links";
+
+    shops.forEach((shop) => {
+      const a = document.createElement("a");
+      a.className = "product-link";
+      a.href = shop.base + encodeURIComponent(searchQuery);
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.innerHTML = `
+        <div class="product-info">
+          <div class="product-name">${searchQuery || "fashion"}</div>
+          <div class="product-store">${shop.name}${color ? " • " + color : ""}</div>
+        </div>
+      `;
+      linksDiv.appendChild(a);
+    });
+
+    contentDiv.appendChild(linksDiv);
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(contentDiv);
+    chatArea.appendChild(messageDiv);
+    scrollToBottom();
+  }
+
+  function addMessage(text, type) {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `message ${type}`;
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = type === "user" ? "U" : "FF";
+    const contentDiv = document.createElement("div");
+    contentDiv.className = "message-content";
+    contentDiv.textContent = text;
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(contentDiv);
+    chatArea.appendChild(messageDiv);
+    scrollToBottom();
+  }
+
+  function showTypingIndicator() {
+    const indicator = document.createElement("div");
+    indicator.className = "message bot";
+    indicator.id = "typingIndicator";
+    indicator.innerHTML = `
+      <div class="avatar">FF</div>
+      <div class="typing-indicator active">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      </div>
+    `;
+    chatArea.appendChild(indicator);
+    scrollToBottom();
+  }
+
+  function hideTypingIndicator() {
+    const indicator = document.getElementById("typingIndicator");
+    if (indicator) indicator.remove();
+  }
+
+  function scrollToBottom() {
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+</script>
+
+</body>
+</html>
+
