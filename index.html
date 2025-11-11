@@ -313,18 +313,24 @@
   const chatArea = document.getElementById("chatArea");
   const userInput = document.getElementById("userInput");
   const sendBtn = document.getElementById("sendBtn");
+const allRetailers = [
+  { name: "Zara", base: "https://www.zara.com/us/en/search?searchTerm=" },
+  { name: "ASOS", base: "https://www.asos.com/search/?q=" },
+  { name: "Uniqlo", base: "https://www.uniqlo.com/us/en/search?q=" },
+  { name: "Target", base: "https://www.target.com/s?searchTerm=" },
+  { name: "Urban Outfitters", base: "https://www.urbanoutfitters.com/search?q=" },
+  { name: "SSENSE", base: "https://www.ssense.com/en-us/women?q=" },
+  { name: "NET-A-PORTER", base: "https://www.net-a-porter.com/en-us/shop/search?searchTerm=" },
+  { name: "H&M", base: "https://www2.hm.com/en_us/search-results.html?q=" },
+  { name: "Tiger Mist", base: "https://tigermist.com/search?q=" },
+  { name: "Miu Miu", base: "https://www.miumiu.com/us/en/search.html?text=" },
+{ name: "PrettyLittleThing", base: "https://www.prettylittlething.us/search?q=" },
+{ name: "Fashion Nova", base: "https://www.fashionnova.com/search?q=" },
+{ name: "Oh Polly", base: "https://ohpolly.com/search?q=" },
 
-  // ✅ flat list of working retailers we can shuffle
-  const allRetailers = [
-    { name: "Zara", base: "https://www.zara.com/us/en/search?searchTerm=" },
-    { name: "ASOS", base: "https://www.asos.com/search/?q=" },
-    { name: "Uniqlo", base: "https://www.uniqlo.com/us/en/search?q=" },
-    { name: "Target", base: "https://www.target.com/s?searchTerm=" },
-    { name: "Urban Outfitters", base: "https://www.urbanoutfitters.com/search?q=" },
-    { name: "SSENSE", base: "https://www.ssense.com/en-us/women?q=" },
-    { name: "NET-A-PORTER", base: "https://www.net-a-porter.com/en-us/shop/search?searchTerm=" },
-    { name: "H&M", base: "https://www2.hm.com/en_us/search-results.html?q=" },
-    { name: "Mango", base: "https://shop.mango.com/us/search?q=" }
+];
+
+    
   ];
 
   const colors = [
